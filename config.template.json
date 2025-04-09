@@ -1,0 +1,7 @@
+{
+  "token": "MY_TOKEN",
+  "clientId": "MY_CLIENT_ID",
+  "guildId": "MY_GUILD_ID",
+  "dataPath": "/home/ubuntu/GitHub/3starwizard-nodejs/streak-tracker/src/data/streakdata.json",
+  "debugMode": false
+}
