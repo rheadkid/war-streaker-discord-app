@@ -1,0 +1,11 @@
+{
+  "name": "war-streaker-discord-app",
+  "version": "0.1.0",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC",
+  "description": "CoC streaks",
+  "dependencies": {
+    "discord.js": "^14.18.0"
+  }
+}
