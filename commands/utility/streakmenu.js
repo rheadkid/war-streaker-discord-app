@@ -35,8 +35,7 @@ module.exports = {
         // Send the menu
         await interaction.reply({
             content: 'Choose a streak command:',
-            components: [row],
-            flags: 64
+            components: [row]
         });
     }
 };
