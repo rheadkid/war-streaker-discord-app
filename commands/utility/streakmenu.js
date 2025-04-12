@@ -5,12 +5,12 @@ const { dataPath, debugMode } = require('../../config.json');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('streakmenu')
-        .setDescription('NEW Streak menu!'),
+        .setDescription('Show streak command menu'),
     async execute(interaction) {
-        // Create buttons for each command
+        // Create buttons for each subcommand
         const checkButton = new ButtonBuilder()
             .setCustomId('streak_check')
-            .setLabel('Streak Check')
+            .setLabel('Check Streaks')
             .setStyle(ButtonStyle.Secondary);
 
         const startButton = new ButtonBuilder()
