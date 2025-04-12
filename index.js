@@ -78,23 +78,30 @@ client.on(Events.InteractionCreate, async interaction => {
     
     // Handle streak menu buttons
     if (interaction.customId.startsWith('streak_')) {
-        const commandType = interaction.customId.replace('streak_', '');
+        const subcommandType = interaction.customId.replace('streak_', '');
+        
+        // Get the main streak command
+        const streakCommand = interaction.client.commands.get('streak');
+        if (!streakCommand) {
+            await interaction.reply({ content: 'Streak command not found.', ephemeral: true });
+            return;
+        }
         
         // Check button doesn't need player name, execute directly
-        if (commandType === 'check') {
-            const command = interaction.client.commands.get('streakcheck');
-            if (!command) {
-                await interaction.reply({ content: 'Command not found.', flags: 64 });
-                return;
-            }
-            
+        if (subcommandType === 'check') {
             try {
-                await command.execute(interaction);
+                // Create a subcommand option
+                interaction.options = {
+                    getSubcommand: () => 'check',
+                    getString: () => null
+                };
+                
+                await streakCommand.execute(interaction);
             } catch (error) {
                 console.error(error);
                 await interaction.reply({ 
-                    content: 'There was an error executing that command!', 
-                    flags: 64 
+                    content: 'There was an error executing that command!',
+                    ephemeral: true
                 });
             }
             return;
@@ -105,8 +112,8 @@ client.on(Events.InteractionCreate, async interaction => {
         
         // Create the modal
         const modal = new ModalBuilder()
-            .setCustomId(`streak_modal_${commandType}`)
-            .setTitle(`${commandType.charAt(0).toUpperCase() + commandType.slice(1)} Streak`);
+            .setCustomId(`streak_modal_${subcommandType}`)
+            .setTitle(`${subcommandType.charAt(0).toUpperCase() + subcommandType.slice(1)} Streak`);
             
         // Add player name input
         const playerInput = new TextInputBuilder()
@@ -130,32 +137,31 @@ client.on(Events.InteractionCreate, async interaction => {
     if (!interaction.isModalSubmit()) return;
     
     if (interaction.customId.startsWith('streak_modal_')) {
-        const commandType = interaction.customId.replace('streak_modal_', '');
+        const subcommandType = interaction.customId.replace('streak_modal_', '');
         const playerName = interaction.fields.getTextInputValue('playerName');
         
-        const command = interaction.client.commands.get(`streak${commandType}`);
-        if (!command) {
-            await interaction.reply({ content: 'Command not found.', flags: 64 });
+        const streakCommand = interaction.client.commands.get('streak');
+        if (!streakCommand) {
+            await interaction.reply({ content: 'Streak command not found.', ephemeral: true });
             return;
         }
         
         try {
-            // Instead of creating a new object, just add the getString method
-            // to the existing interaction object
+            // Set up options for the subcommand structure
             interaction.options = {
+                getSubcommand: () => subcommandType,
                 getString: (name) => {
                     if (name === 'player') return playerName;
                     return null;
-                },
-                ...interaction.options
+                }
             };
             
-            await command.execute(interaction);
+            await streakCommand.execute(interaction);
         } catch (error) {
             console.error(error);
             await interaction.reply({ 
                 content: 'There was an error executing that command!', 
-                flags: 64 
+                ephemeral: true
             });
         }
     }
